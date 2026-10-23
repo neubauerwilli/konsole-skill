@@ -1,0 +1,229 @@
+:root {
+  --nacht: #2b1a12;
+  --kakao: #4a2c1a;
+  --holz: #7a4a28;
+  --creme: #fff1d0;
+  --sand: #f2cf8b;
+  --glut: #f08a2c;
+  --glut-dunkel: #b8561a;
+  --gras: #6cb04a;
+  --schrift: "Lucida Console", "Courier New", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--nacht);
+  font-family: var(--schrift);
+  color: var(--creme);
+  overscroll-behavior: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#spielfeld {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #8fd0e8;
+  touch-action: none;
+}
+
+/* ---------- Menüs ---------- */
+.menue {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 420px);
+  max-height: 94vh;
+  overflow-y: auto;
+  padding: 22px 20px 18px;
+  text-align: center;
+  background: var(--creme);
+  color: var(--kakao);
+  border: 4px solid var(--kakao);
+  box-shadow:
+    0 0 0 4px var(--glut),
+    0 0 0 8px var(--kakao),
+    8px 8px 0 8px rgba(0, 0, 0, .35);
+  z-index: 10;
+  touch-action: manipulation;
+}
+.menue[hidden], #meldung[hidden], #touch-steuerung[hidden], button[hidden] { display: none !important; }
+
+#startmenue::before {
+  content: "";
+  display: block;
+  height: 12px;
+  margin: -22px -20px 14px;
+  background:
+    repeating-linear-gradient(90deg, var(--gras) 0 12px, #4f8f35 12px 24px);
+  border-bottom: 4px solid var(--kakao);
+}
+
+.menue h1 {
+  margin: 0 0 6px;
+  font-size: clamp(34px, 11vw, 52px);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--glut-dunkel);
+  text-shadow: 3px 3px 0 var(--sand), 5px 5px 0 var(--kakao);
+}
+.menue h2 {
+  margin: 0 0 14px;
+  font-size: 30px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--glut-dunkel);
+  text-shadow: 2px 2px 0 var(--sand);
+}
+.menue p { margin: 0 0 18px; font-size: 16px; line-height: 1.4; }
+.menue .hinweis {
+  margin: 18px 0 0;
+  padding-top: 12px;
+  border-top: 3px dotted var(--holz);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--holz);
+}
+
+.menue button {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: var(--creme);
+  background: var(--glut);
+  border: 3px solid var(--kakao);
+  box-shadow: inset -4px -4px 0 var(--glut-dunkel), inset 4px 4px 0 #ffb866, 0 4px 0 var(--kakao);
+  cursor: pointer;
+  text-shadow: 2px 2px 0 var(--glut-dunkel);
+  touch-action: manipulation;
+}
+.menue button:hover, .menue button:focus-visible {
+  background: #ff9b3d;
+  outline: 3px solid var(--gras);
+  outline-offset: 2px;
+}
+.menue button:active {
+  transform: translateY(4px);
+  box-shadow: inset 4px 4px 0 var(--glut-dunkel), 0 0 0 var(--kakao);
+}
+#knopf-weiter, #knopf-fortsetzen { background: var(--gras); text-shadow: 2px 2px 0 #3d7a28; box-shadow: inset -4px -4px 0 #4f8f35, inset 4px 4px 0 #9ad472, 0 4px 0 var(--kakao); }
+#knopf-startmenue { background: var(--holz); text-shadow: 2px 2px 0 var(--kakao); box-shadow: inset -4px -4px 0 var(--kakao), inset 4px 4px 0 #a06a40, 0 4px 0 var(--kakao); }
+
+.menue label {
+  display: block;
+  margin: 4px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+}
+.menue input[type=range] {
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin: 6px 0 0;
+  accent-color: var(--glut-dunkel);
+  touch-action: pan-x;
+}
+
+/* ---------- Meldung ---------- */
+#meldung {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 92vw;
+  padding: 10px 18px;
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--creme);
+  background: var(--kakao);
+  border: 3px solid var(--glut);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, .35);
+  z-index: 20;
+  pointer-events: none;
+}
+#meldung.sichtbar { animation: meldung-ein 2s steps(8) both; }
+@keyframes meldung-ein {
+  0% { opacity: 0; top: 0; }
+  10%, 85% { opacity: 1; top: 14px; }
+  100% { opacity: 0; top: 14px; }
+}
+
+/* ---------- Touch-Steuerung ---------- */
+#touch-steuerung {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+#touch-steuerung button {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  font: inherit;
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 1;
+  color: var(--creme);
+  background: rgba(74, 44, 26, .62);
+  border: 3px solid rgba(255, 241, 208, .85);
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, .3), 3px 3px 0 rgba(0, 0, 0, .3);
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+#touch-steuerung button:active { background: rgba(240, 138, 44, .85); transform: translate(2px, 2px); }
+
+:root { --touch-unten: calc(14px + env(safe-area-inset-bottom, 0px)); --touch-rand: calc(14px + env(safe-area-inset-left, 0px)); --touch-rand-r: calc(14px + env(safe-area-inset-right, 0px)); }
+
+#touch-links   { left: var(--touch-rand); bottom: var(--touch-unten); }
+#touch-rechts  { left: calc(var(--touch-rand) + 84px); bottom: var(--touch-unten); }
+#touch-springen { right: var(--touch-rand-r); bottom: var(--touch-unten); width: 84px; height: 84px; background: rgba(240, 138, 44, .65); }
+#touch-modus   { right: calc(var(--touch-rand-r) + 96px); bottom: var(--touch-unten); background: rgba(108, 176, 74, .65); }
+#touch-modus.setzen { background: rgba(122, 74, 40, .8); }
+
+/* Schmale Fenster: Knöpfe über die Material-Leiste heben, damit sie frei bleibt */
+@media (max-width: 720px) {
+  :root { --touch-unten: calc(84px + env(safe-area-inset-bottom, 0px)); }
+}
+/* Querformat am Handy: niedrig, Leiste ist mittig, Knöpfe außen */
+@media (max-height: 460px) and (min-width: 721px) {
+  :root { --touch-unten: calc(10px + env(safe-area-inset-bottom, 0px)); }
+  #touch-steuerung button { width: 64px; height: 64px; }
+  #touch-springen { width: 76px; height: 76px; }
+  #touch-rechts { left: calc(var(--touch-rand) + 76px); }
+  #touch-modus { right: calc(var(--touch-rand-r) + 88px); }
+}
+@media (max-height: 460px) {
+  .menue { padding: 14px 16px 10px; }
+  .menue h1 { font-size: 30px; }
+  .menue p { margin-bottom: 10px; }
+  .menue .hinweis { margin-top: 8px; padding-top: 8px; }
+  .menue button { min-height: 44px; margin-bottom: 8px; }
+}
+@media (max-width: 380px) {
+  .menue { padding: 18px 14px 14px; }
+  .menue button { font-size: 17px; }
+  .menue .hinweis { font-size: 12px; }
+}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Inselbau</title>
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<canvas id="spielfeld"></canvas>
+
+<div id="startmenue" class="menue">
+  <h1>Inselbau</h1>
+  <p>Bau dir deine Insel, Block für Block.</p>
+  <button id="knopf-neu">Neues Spiel</button>
+  <button id="knopf-weiter" hidden>Weiterspielen</button>
+  <p class="hinweis">A/D laufen · W springen · Maus links abbauen · rechts setzen · 1 bis 6 Material · K speichern · Esc Pause</p>
+</div>
+
+<div id="pausenmenue" class="menue" hidden>
+  <h2>Pause</h2>
+  <button id="knopf-fortsetzen">Weiter</button>
+  <button id="knopf-speichern">Speichern</button>
+  <label>Lautstärke <input id="regler-lautstaerke" type="range" min="0" max="1" step="0.05" value="0.6"></label>
+  <button id="knopf-vollbild">Vollbild</button>
+  <button id="knopf-startmenue">Zum Startmenü</button>
+</div>
+
+<div id="meldung" hidden></div>
+
+<div id="touch-steuerung" hidden>
+  <button id="touch-links" aria-label="Links">◀</button>
+  <button id="touch-rechts" aria-label="Rechts">▶</button>
+  <button id="touch-modus" aria-label="Modus">⛏</button>
+  <button id="touch-springen" aria-label="Springen">▲</button>
+</div>
+
+<script>
+window.SPIEL = window.SPIEL || {};
+SPIEL.konfig = {
+  KACHEL: 32, BREITE: 120, HOEHE: 64, SEED: 20261023,
+  BLOCK: { LUFT: 0, GRAS: 1, ERDE: 2, STEIN: 3, SAND: 4, HOLZ: 5, BLAETTER: 6, WASSER: 7, ERZ: 8 },
+  LEISTE: [1, 2, 3, 4, 5, 6],
+  REICHWEITE: 5,
+  AUTOSPEICHERN_MS: 30000
+};
+</script>
+<script src="grafik.js"></script>
+<script src="welt.js"></script>
+<script src="physik.js"></script>
+<script src="ton.js"></script>
+<script src="speichern.js"></script>
+<script src="steuerung.js"></script>
+<script src="spiel.js"></script>
+<script src="oberflaeche.js"></script>
+</body>
+</html>
